@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | AURELLE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .success-container {
+            min-height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-box {
+            max-width: 650px;
+        }
+
+        .success-icon {
+            font-size: 65px;
+            margin-bottom: 25px;
+        }
+
+        .success-box h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .success-box p {
+            color: #b7b1a6;
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 35px;
+        }
+
+        .success-box a {
+            display: inline-block;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-container">
+        <div class="success-box">
+
+            <div class="success-icon">✦</div>
+
+            <h1>Merci. Your order is confirmed.</h1>
+
+            <p>
+                Thank you for choosing AURELLE.
+                Your order has been received and our kitchen
+                will begin preparing your experience shortly.
+            </p>
+
+            <a href="{% url 'home' %}" class="primary-button">
+                Return to Home
+            </a>
+
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURELLE | Add Dish</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0c0c0b;
+            color: #f5f0e8;
+            font-family: sans-serif;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: auto;
+            padding: 50px 25px;
+        }
+
+        .label {
+            color: #c5a46d;
+            letter-spacing: 4px;
+            font-size: 12px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin: 20px 0 10px;
+        }
+
+        .subtitle {
+            color: #aaa49a;
+            margin-bottom: 40px;
+        }
+
+        .form-box {
+            border: 1px solid #343430;
+            background: #141412;
+            padding: 35px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px;
+            background: #171715;
+            color: #f5f0e8;
+            border: 1px solid #343430;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #c5a46d;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .submit-button {
+            padding: 15px 25px;
+            border: none;
+            background: #c5a46d;
+            color: #111;
+            cursor: pointer;
+        }
+
+        .cancel-button {
+            padding: 15px 25px;
+            border: 1px solid #c5a46d;
+            color: #c5a46d;
+            text-decoration: none;
+        }
+
+        .error {
+            color: #d17c76;
+            margin-bottom: 20px;
+        }
+
+        @media(max-width: 600px) {
+            .page {
+                padding: 30px 15px;
+            }
+
+            .form-box {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="label">AURELLE • MENU MANAGEMENT</div>
+
+    <h1>Add a New Dish</h1>
+
+    <p class="subtitle">
+        Create a new item for your restaurant menu.
+    </p>
+
+    <div class="form-box">
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Food Name</label>
+                <input type="text" name="name" placeholder="Enter dish name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe your dish" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" name="price" step="0.01" min="0" placeholder="Enter price" required>
+            </div>
+
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="url" name="image" placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" required>
+                    <option value="">Select Category</option>
+
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" name="is_available" checked>
+                <label style="margin:0">Available for customers</label>
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit" class="submit-button">
+                    Save Dish
+                </button>
+
+                <a href="{% url 'manage_menu' %}" class="cancel-button">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Dish | AURELLE</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #111;
+            color: #eee;
+            font-family: Arial, sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #1b1b1b;
+            padding: 40px;
+            border: 1px solid #333;
+            border-radius: 12px;
+        }
+
+        h1 {
+            color: #d4af77;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 20px 0 8px;
+            color: #ddd;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 13px;
+            background: #292929;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .checkbox input {
+            width: auto;
+        }
+
+        .checkbox label {
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 22px;
+            background: #d4af77;
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+
+        .btn:hover {
+            background: #e5c695;
+        }
+
+        .cancel {
+            margin-left: 10px;
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .error {
+            background: #5a2020;
+            color: #ffcccc;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Edit Dish</h1>
+    <p class="subtitle">Update your restaurant menu item.</p>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Dish Name</label>
+        <input type="text" name="name" value="{{ food.name }}" required>
+
+        <label>Description</label>
+        <textarea name="description" required>{{ food.description }}</textarea>
+
+        <label>Price (₹)</label>
+        <input type="number" name="price" step="0.01" min="0"
+               value="{{ food.price }}" required>
+
+        <label>Image URL</label>
+        <input type="url" name="image" value="{{ food.image }}">
+
+        <label>Category</label>
+        <select name="category" required>
+            {% for category in categories %}
+                <option value="{{ category.id }}"
+                    {% if category.id == food.category.id %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <div class="checkbox">
+            <input type="checkbox" name="is_available"
+                   id="is_available"
+                   {% if food.is_available %}checked{% endif %}>
+            <label for="is_available">Available for customers</label>
+        </div>
+
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="{% url 'manage_menu' %}" class="cancel">Cancel</a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

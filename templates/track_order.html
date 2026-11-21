@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Track Your Order | AURELLE</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            background: #0c0c0b;
+            color: #f5f0e8;
+        }
+
+        .tracking-container {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .tracking-box {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .tracking-label {
+            color: #c5a46d;
+            letter-spacing: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .tracking-box h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .tracking-description {
+            color: #aaa49a;
+            line-height: 1.8;
+            margin-bottom: 35px;
+        }
+
+        .tracking-form {
+            text-align: left;
+        }
+
+        .tracking-form label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .tracking-form input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 25px;
+            background: #171715;
+            border: 1px solid #343430;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .tracking-form input:focus {
+            outline: none;
+            border-color: #c5a46d;
+        }
+
+        .tracking-form button {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .tracking-error {
+            color: #e88a8a;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tracking-result {
+            margin-top: 40px;
+            padding: 30px;
+            border: 1px solid #343430;
+            text-align: left;
+        }
+
+        .tracking-result h2 {
+            margin-bottom: 20px;
+        }
+
+        .tracking-status {
+            color: #c5a46d;
+            font-size: 22px;
+            margin: 15px 0;
+        }
+
+        .tracking-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 15px 0;
+            color: #aaa49a;
+        }
+
+        .tracking-item strong {
+            color: #f5f0e8;
+        }
+
+        .tracking-back {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            color: #c5a46d;
+        }
+
+        /* ORDER PROGRESS TRACKER */
+
+        .order-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 35px 0;
+            width: 100%;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 55px;
+            color: #777;
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-step.active .progress-circle {
+            background: #c5a46d;
+            color: #111;
+            border-color: #c5a46d;
+        }
+
+        .progress-step.active p {
+            color: #c5a46d;
+        }
+
+        .progress-step p {
+            font-size: 12px;
+        }
+
+        .progress-line {
+            height: 2px;
+            background: #444;
+            flex: 1;
+            margin: 0 5px 25px;
+        }
+
+        .progress-line.active {
+            background: #c5a46d;
+        }
+
+        @media(max-width: 600px) {
+
+            .tracking-box h1 {
+                font-size: 34px;
+            }
+
+            .progress-step {
+                min-width: 40px;
+            }
+
+            .progress-step p {
+                font-size: 10px;
+            }
+
+            .progress-circle {
+                width: 28px;
+                height: 28px;
+            }
+
+            .tracking-result {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="tracking-container">
+
+    <div class="tracking-box">
+
+        <div class="tracking-label">
+            AURELLE • ORDER SERVICE
+        </div>
+
+        <h1>Track your experience.</h1>
+
+        <p class="tracking-description">
+            Enter your order number and registered phone number
+            to discover the current status of your order.
+        </p>
+
+        <!-- TRACKING FORM -->
+
+        <form method="POST" class="tracking-form">
+            {% csrf_token %}
+
+            <label for="order_id">Order Number</label>
+
+            <input
+                type="number"
+                name="order_id"
+                id="order_id"
+                placeholder="Enter your order ID"
+                required
+            >
+
+            <label for="phone">Phone Number</label>
+
+            <input
+                type="tel"
+                name="phone"
+                id="phone"
+                placeholder="Enter your registered phone number"
+                required
+            >
+
+            <button type="submit" class="primary-button">
+                Track Order →
+            </button>
+        </form>
+
+        <!-- ERROR MESSAGE -->
+
+        {% if error %}
+            <div class="tracking-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+
+        <!-- ORDER DETAILS -->
+
+        {% if order %}
+
+            <div class="tracking-result">
+
+                <h2>Order #{{ order.id }}</h2>
+
+                <div class="tracking-item">
+                    <span>Customer</span>
+                    <strong>{{ order.customer_name }}</strong>
+                </div>
+
+                <div class="tracking-item">
+                    <span>Order Status</span>
+                    <strong class="tracking-status">
+                        {{ order.status }}
+                    </strong>
+                </div>
+
+
+                <!-- VISUAL PROGRESS -->
+
+                <div class="order-progress">
+
+                    {% with current=order.status %}
+
+                    <div class="progress-step {% if current == 'Pending' or current == 'Preparing' or current == 'Ready' or current == 'Delivered' %}active{% endif %}">
+                        <div class="progress-circle">1</div>
+                        <p>Received</p>
+                    </div>
+
+                    <div class="progress-line {% if current == 'Preparing' or current == 'Ready' or current == 'Delivered' %}active{% endif %}"></div>
+
+                    <div class="progress-step {% if current == 'Preparing' or current == 'Ready' or current == 'Delivered' %}active{% endif %}">
+                        <div class="progress-circle">2</div>
+                        <p>Preparing</p>
+                    </div>
+
+                    <div class="progress-line {% if current == 'Ready' or current == 'Delivered' %}active{% endif %}"></div>
+
+                    <div class="progress-step {% if current == 'Ready' or current == 'Delivered' %}active{% endif %}">
+                        <div class="progress-circle">3</div>
+                        <p>Ready</p>
+                    </div>
+
+                    <div class="progress-line {% if current == 'Delivered' %}active{% endif %}"></div>
+
+                    <div class="progress-step {% if current == 'Delivered' %}active{% endif %}">
+                        <div class="progress-circle">4</div>
+                        <p>Delivered</p>
+                    </div>
+
+                    {% endwith %}
+
+                </div>
+
+
+                <!-- ORDERED ITEMS -->
+
+                <h3>Your Items</h3>
+
+                {% for item in order.items.all %}
+
+                    <div class="tracking-item">
+
+                        <span>
+                            {{ item.food.name }} × {{ item.quantity }}
+                        </span>
+
+                        <strong>
+                            ₹{{ item.subtotal }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <a href="{% url 'home' %}" class="tracking-back">
+                    ← Return to Home
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

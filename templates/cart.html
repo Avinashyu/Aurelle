@@ -1,0 +1,236 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AURELLE | Your Cart</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        .cart-container {
+            padding: 100px 7%;
+            min-height: 80vh;
+        }
+
+        .cart-container h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 55px;
+            font-weight: 400;
+            margin-bottom: 50px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cart-item h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item p {
+            color: #a5a19a;
+            font-size: 14px;
+        }
+
+        .cart-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-actions input {
+            background: #191917;
+            color: #f4f0e8;
+            border: 1px solid #c5a572;
+            padding: 10px;
+            width: 70px;
+        }
+
+        .cart-actions button {
+            background: #c5a572;
+            color: #11110f;
+            border: none;
+            padding: 12px 18px;
+            cursor: pointer;
+        }
+
+        .remove-link {
+            color: #c5a572;
+            font-size: 13px;
+        }
+
+        .cart-total {
+            text-align: right;
+            margin-top: 50px;
+        }
+
+        .cart-total h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: 35px;
+            margin-bottom: 25px;
+        }
+
+        .empty-cart {
+            color: #a5a19a;
+            font-size: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-actions {
+                flex-wrap: wrap;
+            }
+
+            .cart-container h1 {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            AURELLE<span>.</span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#menu">Menu</a>
+        </nav>
+
+        <a href="/" class="nav-button">
+            CONTINUE DINING
+        </a>
+
+    </header>
+
+
+    <section class="cart-container">
+
+        <p class="eyebrow">YOUR SELECTION</p>
+
+        <h1>Your Shopping Cart</h1>
+
+        {% if cart_items %}
+
+            {% for item in cart_items %}
+
+                <div class="cart-item">
+
+                    <div>
+                        <h3>{{ item.food.name }}</h3>
+
+                        <p>
+                            ₹{{ item.food.price }} × {{ item.quantity }}
+                        </p>
+
+                        <p>
+                            Subtotal: ₹{{ item.subtotal }}
+                        </p>
+                    </div>
+
+                    <div class="cart-actions">
+
+                        <form action="{% url 'update_cart' item.food.id %}" method="POST">
+
+                            {% csrf_token %}
+
+                            <input type="number"
+                                   name="quantity"
+                                   value="{{ item.quantity }}"
+                                   min="1">
+
+                            <button type="submit">
+                                UPDATE
+                            </button>
+
+                        </form>
+
+                        <a href="{% url 'remove_from_cart' item.food.id %}"
+                           class="remove-link">
+                            REMOVE
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+            <div class="cart-total">
+
+                <h2>
+                    Total: ₹{{ total }}
+                </h2>
+
+                <a href="{% url 'checkout' %}" class="primary-button">
+    Proceed to Checkout →
+</a>
+                </button>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-cart">
+                Your cart is currently empty.
+            </p>
+
+            <br>
+
+            <a href="/#menu" class="primary-button">
+                EXPLORE OUR MENU
+            </a>
+
+        {% endif %}
+
+    </section>
+
+
+    <footer class="footer">
+
+        <div class="footer-top">
+
+            <h2>AURELLE<span>.</span></h2>
+
+            <p>
+                An expression of culinary elegance.<br>
+                Crafted with passion. Served with purpose.
+            </p>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <span>© 2026 AURELLE</span>
+
+            <span>ALL RIGHTS RESERVED</span>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>
